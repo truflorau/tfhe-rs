@@ -1,13 +1,13 @@
 # FHE boolean Trivium implementation using TFHE-rs
 
 The cleartext boolean Trivium is available to be built using the function `TriviumStream::<bool>::new`. 
-This takes as input 2 arrays of 80 bool: the Trivium key and the IV. After initialization, it returns a TriviumStream on 
+This takes 2 arrays of 80 bool as input: the Trivium key and the IV. After initialization, it returns a TriviumStream on 
 which the user can call `next`, getting the next bit of the cipher stream, or `next_64`, which will compute 64 values at once,
 using multithreading to accelerate the computation.
 
 
-Quite similarly, the function `TriviumStream::<FheBool>::new` will return a very similar object running in FHE space. Its arguments are
-2 arrays of 80 FheBool representing the encrypted Trivium key, and the encrypted IV. It also requires a reference to the the server key of the 
+Quite similarly, the function `TriviumStream::<FheBool>::new` will return a very similar object running in the FHE space. Its arguments are
+2 arrays of 80 FheBool representing the encrypted Trivium key, and the encrypted IV. It also requires a reference to the server key of the 
 current scheme. This means that any user of this feature must also have the `tfhe-rs` crate as a dependency.
 
 
@@ -120,18 +120,18 @@ fn main() {
 # FHE byte Trivium implementation
 
 The same objects have also been implemented to stream bytes instead of booleans. They can be constructed and used in the same way via the functions `TriviumStreamByte::<u8>::new` and 
-`TriviumStreamByte::<FheUint8>::new` with the same arguments as before. The `FheUint8` version is significantly slower than the `FheBool` version, because not running 
-with the same cryptographic parameters. Its interest lie in its trans-ciphering capabilities: `TriviumStreamByte<FheUint8>` implements the trait `TransCiphering`, 
+`TriviumStreamByte::<FheUint8>::new` with the same arguments as before. The `FheUint8` version is significantly slower than the `FheBool` version because it does not run 
+with the same cryptographic parameters. Its interest lies in its trans-ciphering capabilities: `TriviumStreamByte<FheUint8>` implements the trait `TransCiphering`, 
 meaning it implements the functions `trans_encrypt_64`. This function takes as input a `FheUint64` and outputs a `FheUint64`, the output being
 encrypted via tfhe and trivium. For convenience we also provide `trans_decrypt_64`, but this is of course the exact same function.
 
-Other sizes than 64 bit are expected to be available in the future.
+Other sizes than 64-bit are expected to be available in the future.
 
 # FHE shortint Trivium implementation
 
-The same implementation is also available for generic Ciphertexts representing bits (meant to be used with parameters `PARAM_MESSAGE_1_CARRY_1_KS_PBS`). It uses a lower level API 
+The same implementation is also available for generic Ciphertexts representing bits (meant to be used with parameters `PARAM_MESSAGE_1_CARRY_1_KS_PBS`). It uses a lower-level API 
 of tfhe-rs, so the syntax is a little bit different. It also implements the `TransCiphering` trait. For optimization purposes, it does not internally run on the same 
-cryptographic parameters as the high level API of tfhe-rs. As such, it requires the usage of a casting key, to switch from one parameter space to another, which makes 
+cryptographic parameters as the high-level API of tfhe-rs. As such, it requires the usage of a casting key, to switch from one parameter space to another, which makes 
 its setup a little more intricate.
 
 Example code:
